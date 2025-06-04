@@ -41,11 +41,13 @@ const configuration_workflow = () =>
         body: encodedParams,
       };
 
-      const res = await fetch(url, options)
-      const jres = await res.json()    
-      console.log(jres);
-      
-      return {...ctx, ...jres};
+      const res = await fetch(url, options);
+      if (res.status === 200) {
+        const jres = await res.json();
+        console.log(jres);
+
+        return { ...ctx, ...jres };
+      } else throw new Error("unable to authorize: " + (await res.text()));
     },
     steps: [
       {
