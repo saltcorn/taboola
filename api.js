@@ -19,6 +19,11 @@ const getCurrentAccount = async (cfg) => {
   return await getAPI(url, cfg);
 };
 
+const getAllowedAccount = async (cfg) => {
+  const url = `/users/current/allowed-accounts`;
+  return await getAPI(url, cfg);
+};
+
 const getCampaign = async (campaignId, cfg) => {
   /*
 GEThttps://private-anon-3cbd964d5b-amplifyv01.apiary-mock.com/campaigns/00f4b02153ee75f3c9dc4fc128ab0411ab?extraFields=CustomAudience,Locations,InterestsTargeting,BidBySections,BlockedSites,PlatformTargeting,CampaignOptimization,Scheduling,IABCategories,CampaignPixels*/
@@ -49,6 +54,7 @@ const getPromotedContentReport = async (marketerId, q, cfg) => {
 
 module.exports = {
   getCurrentAccount,
+  getAllowedAccount,
   getCampaign,
   getCampaignsForMarketer,
   getPromotedLinksForCampaign,
