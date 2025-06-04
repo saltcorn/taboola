@@ -24,6 +24,7 @@ const {
   getCampaignsForMarketer,
   getPromotedLinksForCampaign,
   getPromotedContentReport,
+  getCurrentAccount,
 } = require("./api");
 const configuration_workflow = () =>
   new Workflow({
@@ -81,6 +82,14 @@ module.exports = {
   configuration_workflow,
   //table_providers: require("./table-provider.js"),
   functions: (cfg) => ({
+    get_taboola_current_account: {
+      async run() {
+        return await getCurrentAccount(cfg);
+      },
+      isAsync: true,
+      description: "Get taboola current account",
+      arguments: [],
+    },
     get_taboola_marketer_campaigns: {
       async run(marketerId, query) {
         return await getCampaignsForMarketer(marketerId, query, cfg);

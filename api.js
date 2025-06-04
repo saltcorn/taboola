@@ -1,17 +1,22 @@
 const { objectToQueryString } = require("@saltcorn/data/utils");
 const fetch = require("node-fetch");
 
-const base = "https://api.outbrain.com/amplify/v0.1";
+const base = "https://backstage.taboola.com/backstage/api/1.0";
 
-const getAPI = async (urlPath, { token }) => {
-  console.log({ urlPath, token });
+const getAPI = async (urlPath, { access_token }) => {
+  console.log({ urlPath, access_token });
 
   const response = await fetch(`${base}${urlPath}`, {
     headers: {
-      "ob-token-v1": token,
+      Authorization: `Bearer ${access_token}`,
     },
   });
   return await response.json();
+};
+
+const getCurrentAccount = async (cfg) => {
+  const url = `/users/current/account`;
+  return await getAPI(url, cfg);
 };
 
 const getCampaign = async (campaignId, cfg) => {
@@ -43,6 +48,7 @@ const getPromotedContentReport = async (marketerId, q, cfg) => {
 };
 
 module.exports = {
+  getCurrentAccount,
   getCampaign,
   getCampaignsForMarketer,
   getPromotedLinksForCampaign,
