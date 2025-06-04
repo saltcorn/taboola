@@ -21,7 +21,7 @@ const { mkTable } = require("@saltcorn/markup");
 const { readState } = require("@saltcorn/data/plugin-helper");
 const {
   getAllowedAccount,
-  getCampaignsForMarketer,
+  getCampaignsForAccount,
   getPromotedLinksForCampaign,
   getPromotedContentReport,
   getCurrentAccount,
@@ -98,13 +98,13 @@ module.exports = {
       description: "Get taboola allowed accounts",
       arguments: [],
     },
-    get_taboola_marketer_campaigns: {
-      async run(marketerId, query) {
-        return await getCampaignsForMarketer(marketerId, query, cfg);
+    get_taboola_account_campaigns: {
+      async run(accountId, query) {
+        return await getCampaignsForAccount(accountId, query, cfg);
       },
       isAsync: true,
-      description: "Get taboola campaigns for marketer",
-      arguments: [{ name: "marketerId", type: "String" }],
+      description: "Get taboola campaigns for account",
+      arguments: [{ name: "accountId", type: "String" }],
     },
     get_taboola_campaign_promoted_links: {
       async run(campaignId, query) {

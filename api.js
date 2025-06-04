@@ -31,9 +31,9 @@ GEThttps://private-anon-3cbd964d5b-amplifyv01.apiary-mock.com/campaigns/00f4b021
   return await getAPI(url, cfg);
 };
 
-const getCampaignsForMarketer = async (marketerId, q, cfg) => {
+const getCampaignsForAccount = async (accountId, q, cfg) => {
   const qs = objectToQueryString(q || {}) || "";
-  return await getAPI(`/marketers/${marketerId}/campaigns?${qs}`, cfg);
+  return await getAPI(`/${accountId}/campaigns?${qs}`, cfg);
 };
 
 const getPromotedLinksForCampaign = async (campaignId, q, cfg) => {
@@ -56,7 +56,7 @@ module.exports = {
   getCurrentAccount,
   getAllowedAccount,
   getCampaign,
-  getCampaignsForMarketer,
+  getCampaignsForAccount,
   getPromotedLinksForCampaign,
   getPromotedContentReport,
 };
