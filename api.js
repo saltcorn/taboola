@@ -24,23 +24,18 @@ const getAllowedAccount = async (cfg) => {
   return await getAPI(url, cfg);
 };
 
-const getCampaign = async (campaignId, cfg) => {
-  /*
-GEThttps://private-anon-3cbd964d5b-amplifyv01.apiary-mock.com/campaigns/00f4b02153ee75f3c9dc4fc128ab0411ab?extraFields=CustomAudience,Locations,InterestsTargeting,BidBySections,BlockedSites,PlatformTargeting,CampaignOptimization,Scheduling,IABCategories,CampaignPixels*/
-  const url = `/campaigns/${campaignId}?extraFields=CustomAudience,Locations,InterestsTargeting,BidBySections,BlockedSites,PlatformTargeting,CampaignOptimization,Scheduling,IABCategories,CampaignPixels`;
-  return await getAPI(url, cfg);
-};
 
 const getCampaignsForAccount = async (accountId, q, cfg) => {
   const qs = objectToQueryString(q || {}) || "";
   return await getAPI(`/${accountId}/campaigns?${qs}`, cfg);
 };
 
-const getPromotedLinksForCampaign = async (campaignId, q, cfg) => {
+
+const getCampaignItems = async (accountId, campaignId, q, cfg) => {
   const qs = objectToQueryString(q || {}) || "";
 
   // /campaigns/abf4b02153ee75f3cadc4fc128ab0419ab/promotedLinks?enabled=true&statuses=APPROVED,PENDING,REJECTED&limit=200&offset=3&sort=-creationTime&promotedLinkImageWidth=100&promotedLinkImageHeight=100
-  return await getAPI(`/campaigns/${campaignId}/promotedLinks?${qs}`, cfg);
+  return await getAPI(`/${accountId}/campaigns/${campaignId}/items?${qs}`, cfg);
 };
 
 const getPromotedContentReport = async (marketerId, q, cfg) => {
@@ -55,8 +50,7 @@ const getPromotedContentReport = async (marketerId, q, cfg) => {
 module.exports = {
   getCurrentAccount,
   getAllowedAccount,
-  getCampaign,
   getCampaignsForAccount,
-  getPromotedLinksForCampaign,
+  getCampaignItems,
   getPromotedContentReport,
 };

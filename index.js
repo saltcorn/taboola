@@ -22,7 +22,7 @@ const { readState } = require("@saltcorn/data/plugin-helper");
 const {
   getAllowedAccount,
   getCampaignsForAccount,
-  getPromotedLinksForCampaign,
+  getCampaignItems,
   getPromotedContentReport,
   getCurrentAccount,
 } = require("./api");
@@ -106,13 +106,16 @@ module.exports = {
       description: "Get taboola campaigns for account",
       arguments: [{ name: "accountId", type: "String" }],
     },
-    get_taboola_campaign_promoted_links: {
-      async run(campaignId, query) {
-        return await getPromotedLinksForCampaign(campaignId, query, cfg);
+    get_taboola_campaign_items: {
+      async run(accountId, campaignId, query) {
+        return await getCampaignItems(accountId, campaignId, query, cfg);
       },
       isAsync: true,
-      description: "Get taboola promoted links for campaign",
-      arguments: [{ name: "campaignId", type: "String" }],
+      description: "Get taboola ad items for campaign",
+      arguments: [
+        { name: "accountId", type: "String" },
+        { name: "campaignId", type: "String" },
+      ],
     },
     get_taboola_promoted_content_report: {
       async run(marketerId, query) {
