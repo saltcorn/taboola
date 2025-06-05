@@ -23,7 +23,7 @@ const {
   getAllowedAccount,
   getCampaignsForAccount,
   getCampaignItems,
-  getPromotedContentReport,
+  getCampaignContentReport,
   getCurrentAccount,
 } = require("./api");
 const configuration_workflow = () =>
@@ -117,31 +117,20 @@ module.exports = {
         { name: "campaignId", type: "String" },
       ],
     },
-    get_taboola_promoted_content_report: {
-      async run(marketerId, query) {
-        /* Query example: 
-        {
-          from: "2015-12-22",
-          to: "2016-01-20",
-          limit: 10,
-          offset: 3,
-          sort: "-ctr",
-          filter: "clicks+gt+99",
-          includeArchivedCampaigns: true,
-          budgetId: "adc4fc128ab0419ababf4b02153ee75f3c",
-          campaignId:
-            "e75f3cadc4fc128ab0419ababf4b02153e, 0069fc0fe9598f99b4c528f0881cd74b4b",
-          promotedLinkId: "19ababf4b02153ee75f3cadc4fc128ab04",
-          includeConversionDetails: false,
-          conversionsByClickDate: true,
-        };
-        */
-        return await getPromotedContentReport(marketerId, query, cfg);
+    get_taboola_campaign_content_report: {
+      async run(accountId, campaignId, query) {
+        return await getCampaignContentReport(
+          accountId,
+          campaignId,
+          query,
+          cfg
+        );
       },
       isAsync: true,
-      description: "Get taboola promoted links for campaign",
+      description: "Get taboola top campaign content report",
       arguments: [
-        { name: "marketerId", type: "String" },
+        { name: "accountId", type: "String" },
+        { name: "campaignId", type: "String" },
         { name: "query", type: "JSON" },
       ],
     },
