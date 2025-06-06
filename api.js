@@ -52,4 +52,5 @@ module.exports = {
   getCampaignsForAccount,
   getCampaignItems,
   getCampaignContentReport,
+  getAPI
 };
