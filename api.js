@@ -11,7 +11,13 @@ const getAPI = async (urlPath, { access_token }) => {
       Authorization: `Bearer ${access_token}`,
     },
   });
-  return await response.json();
+  try {
+    return await response.json();
+  } catch (e) {
+    console.error(e);
+    console.error(await response.text());
+    throw e;
+  }
 };
 
 const getCurrentAccount = async (cfg) => {
@@ -52,5 +58,5 @@ module.exports = {
   getCampaignsForAccount,
   getCampaignItems,
   getCampaignContentReport,
-  getAPI
+  getAPI,
 };
