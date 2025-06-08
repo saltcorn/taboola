@@ -11,12 +11,12 @@ const getAPI = async (urlPath, { access_token }) => {
       Authorization: `Bearer ${access_token}`,
     },
   });
-  try {
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("application/json"))
     return await response.json();
-  } catch (e) {
-    console.error(e);
+  else {
     console.error(await response.text());
-    throw e;
+    throw new Error("not json response");
   }
 };
 
