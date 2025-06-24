@@ -25,7 +25,10 @@ const {
   getCampaignItems,
   getCampaignContentReport,
   getCurrentAccount,
-  getAPI
+  getAPI,
+  getCampaignItem,
+  createCampaignItem,
+  updateCampaignItem,
 } = require("./api");
 const configuration_workflow = () =>
   new Workflow({
@@ -126,6 +129,18 @@ module.exports = {
         { name: "campaignId", type: "String" },
       ],
     },
+    get_taboola_campaign_item: {
+      async run(accountId, campaignId, itemId) {
+        return await getCampaignItem(accountId, campaignId, itemId, cfg);
+      },
+      isAsync: true,
+      description: "Get taboola ad items",
+      arguments: [
+        { name: "accountId", type: "String" },
+        { name: "campaignId", type: "String" },
+        { name: "itemId", type: "String" },
+      ],
+    },
     get_taboola_campaign_content_report: {
       async run(accountId, campaignId, query) {
         return await getCampaignContentReport(
@@ -141,6 +156,37 @@ module.exports = {
         { name: "accountId", type: "String" },
         { name: "campaignId", type: "String" },
         { name: "query", type: "JSON" },
+      ],
+    },
+    create_taboola_campaign_item: {
+      async run(accountId, campaignId, url) {
+        return await createCampaignItem(accountId, campaignId, url, cfg);
+      },
+      isAsync: true,
+      description: "Create taboola ad item",
+      arguments: [
+        { name: "accountId", type: "String" },
+        { name: "campaignId", type: "String" },
+        { name: "url", type: "String" },
+      ],
+    },
+    update_taboola_campaign_item: {
+      async run(accountId, campaignId, itemId, body) {
+        return await updateCampaignItem(
+          accountId,
+          campaignId,
+          itemId,
+          body,
+          cfg
+        );
+      },
+      isAsync: true,
+      description: "Update taboola ad item",
+      arguments: [
+        { name: "accountId", type: "String" },
+        { name: "campaignId", type: "String" },
+        { name: "itemId", type: "String" },
+        { name: "body", type: "JSON" },
       ],
     },
   }),
