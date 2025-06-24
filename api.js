@@ -4,7 +4,7 @@ const fetch = require("node-fetch");
 const base = "https://backstage.taboola.com/backstage/api/1.0";
 
 const getAPI = async (urlPath, { access_token }) => {
-  console.log({ urlPath, access_token });
+  //console.log({ urlPath, access_token });
 
   const response = await fetch(`${base}${urlPath}`, {
     headers: {
@@ -18,6 +18,19 @@ const getAPI = async (urlPath, { access_token }) => {
     console.error(await response.text());
     throw new Error("not json response");
   }
+};
+
+const postAPI = async (urlPath, body, { access_token }) => {
+  const response = await fetch(`${base}${urlPath}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  return await response.json();
 };
 
 const getCurrentAccount = async (cfg) => {
@@ -42,12 +55,35 @@ const getCampaignItems = async (accountId, campaignId, q, cfg) => {
   return await getAPI(`/${accountId}/campaigns/${campaignId}/items?${qs}`, cfg);
 };
 
+const getCampaignItem = async (accountId, campaignId, itemId, cfg) => {
+  return await getAPI(
+    `/${accountId}/campaigns/${campaignId}/items/${itemId}/`,
+    cfg
+  );
+};
+
 const getCampaignContentReport = async (accountId, campaignId, q, cfg) => {
   if (!q) q = {};
   q.campaign = campaignId;
   const qs = objectToQueryString(q) || "";
   return await getAPI(
     `/${accountId}/reports/top-campaign-content/dimensions/item_breakdown?${qs}`,
+    cfg
+  );
+};
+
+const createCampaignItem = async (accountId, campaignId, url, cfg) => {
+  return await postAPI(
+    `/${accountId}/campaigns/${campaignId}/items`,
+    { url },
+    cfg
+  );
+};
+
+const updateCampaignItem = async (accountId, campaignId, itemId, body, cfg) => {
+  return await postAPI(
+    `/${accountId}/campaigns/${campaignId}/items/${itemId}/`,
+    body,
     cfg
   );
 };
@@ -59,4 +95,7 @@ module.exports = {
   getCampaignItems,
   getCampaignContentReport,
   getAPI,
+  createCampaignItem,
+  updateCampaignItem,
+  getCampaignItem,
 };
