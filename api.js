@@ -21,6 +21,7 @@ const getAPI = async (urlPath, { access_token }) => {
 };
 
 const postAPI = async (urlPath, body, { access_token }) => {
+  console.log(`Taboola POST to: ${base}${urlPath}`)
   const response = await fetch(`${base}${urlPath}`, {
     method: "POST",
     headers: {
