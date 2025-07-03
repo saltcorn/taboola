@@ -4,7 +4,7 @@ const fetch = require("node-fetch");
 const base = "https://backstage.taboola.com/backstage/api/1.0";
 
 const getAPI = async (urlPath, { access_token }) => {
-  //console.log({ urlPath, access_token });
+  console.log({ urlPath, access_token });
 
   const response = await fetch(`${base}${urlPath}`, {
     headers: {
@@ -21,7 +21,7 @@ const getAPI = async (urlPath, { access_token }) => {
 };
 
 const postAPI = async (urlPath, body, { access_token }) => {
-  console.log(`Taboola POST to: ${base}${urlPath}`)
+  console.log(`Taboola POST to: ${base}${urlPath}: ${JSON.stringify(body)}`)
   const response = await fetch(`${base}${urlPath}`, {
     method: "POST",
     headers: {
