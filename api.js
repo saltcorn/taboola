@@ -81,7 +81,7 @@ const getCampaignContentReport = async (accountId, campaignId, q, cfg) => {
 
 const createCampaignItem = async (accountId, campaignId, url, cfg) => {
   return await postAPI(
-    `/${accountId}/campaigns/${campaignId}/items`,
+    `/${accountId}/campaigns/${campaignId}/items/`,
     { url },
     cfg
   );
