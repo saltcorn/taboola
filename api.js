@@ -30,7 +30,13 @@ const postAPI = async (urlPath, body, { access_token }) => {
     },
     body: JSON.stringify(body),
   });
-  return await response.json();
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("application/json"))
+    return await response.json();
+  else {
+    console.error(await response.text());
+    throw new Error("not json response");
+  }
 };
 
 const getCurrentAccount = async (cfg) => {
