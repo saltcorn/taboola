@@ -1,6 +1,6 @@
 {
   "name": "@saltcorn/taboola",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Taboola API",
   "main": "index.js",
   "dependencies": {
