@@ -30,7 +30,8 @@ const {
   createCampaignItem,
   updateCampaignItem,
 } = require("./api");
-
+const Plugin = require("@saltcorn/data/models/plugin");
+const { getState } = require("@saltcorn/data/db/state");
 const get_taboola_token = async (client_id, client_secret) => {
   const encodedParams = new URLSearchParams();
   encodedParams.set("client_id", client_id);
@@ -212,6 +213,31 @@ module.exports = {
     },
   }),
   actions: (cfg) => ({
+    refresh_taboola_token: {
+      description: "Refresh global Taboola token",
+      run: async () => {
+        const { access_token } = await get_taboola_token(
+          cfg.client_id,
+          cfg.client_secret
+        );
+        let plugin = await Plugin.findOne({ name: "taboola" });
+        if (!plugin) {
+          plugin = await Plugin.findOne({
+            name: "@saltcorn/taboola",
+          });
+        }
+        const newConfig = {
+          ...(plugin.configuration || {}),
+          access_token,
+        };
+        plugin.configuration = newConfig;
+        await plugin.upsert();
+        getState().processSend({
+          refresh_plugin_cfg: plugin.name,
+          tenant: db.getTenantSchema(),
+        });
+      },
+    },
     //taboola_sync: require("./sync-action")(cfg),
     //caldav_edit: require("./add-action")(cfg),
   }),
