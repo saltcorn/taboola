@@ -30,29 +30,32 @@ const {
   createCampaignItem,
   updateCampaignItem,
 } = require("./api");
+
+const get_taboola_token = async (client_id, client_secret) => {
+  const encodedParams = new URLSearchParams();
+  encodedParams.set("client_id", client_id);
+  encodedParams.set("client_secret", client_secret);
+  encodedParams.set("grant_type", "client_credentials");
+
+  const url = "https://backstage.taboola.com/backstage/oauth/token";
+  const options = {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: encodedParams,
+  };
+
+  const res = await fetch(url, options);
+  if (res.status === 200) {
+    return await res.json();
+  } else throw new Error("unable to authorize: " + (await res.text()));
+};
+
 const configuration_workflow = () =>
   new Workflow({
     onDone: async (ctx) => {
       console.log("taboola done cfg", ctx);
-      const encodedParams = new URLSearchParams();
-      encodedParams.set("client_id", ctx.client_id);
-      encodedParams.set("client_secret", ctx.client_secret);
-      encodedParams.set("grant_type", "client_credentials");
-
-      const url = "https://backstage.taboola.com/backstage/oauth/token";
-      const options = {
-        method: "POST",
-        headers: { "content-type": "application/x-www-form-urlencoded" },
-        body: encodedParams,
-      };
-
-      const res = await fetch(url, options);
-      if (res.status === 200) {
-        const jres = await res.json();
-        console.log(jres);
-
-        return { ...ctx, ...jres };
-      } else throw new Error("unable to authorize: " + (await res.text()));
+      const jres = await get_taboola_token(ctx.client_id, ctx.client_secret);
+      return { ...ctx, ...jres };
     },
     steps: [
       {
@@ -87,40 +90,46 @@ module.exports = {
   //table_providers: require("./table-provider.js"),
   functions: (cfg) => ({
     taboola_auth_fetch: {
-      async run(url) {
-        return await getAPI(url, cfg);
+      async run(url, cfgOverRide) {
+        return await getAPI(url, { ...cfg, ...cfgOverRide });
       },
       isAsync: true,
       description: "taboola authenticated fetch",
       arguments: [],
     },
     get_taboola_current_account: {
-      async run() {
-        return await getCurrentAccount(cfg);
+      async run(cfgOverRide) {
+        return await getCurrentAccount({ ...cfg, ...cfgOverRide });
       },
       isAsync: true,
       description: "Get taboola current account",
       arguments: [],
     },
     get_taboola_allowed_accounts: {
-      async run() {
-        return await getAllowedAccount(cfg);
+      async run(cfgOverRide) {
+        return await getAllowedAccount({ ...cfg, ...cfgOverRide });
       },
       isAsync: true,
       description: "Get taboola allowed accounts",
       arguments: [],
     },
     get_taboola_account_campaigns: {
-      async run(accountId, query) {
-        return await getCampaignsForAccount(accountId, query, cfg);
+      async run(accountId, query, cfgOverRide) {
+        return await getCampaignsForAccount(accountId, query, {
+          ...cfg,
+          ...cfgOverRide,
+        });
       },
       isAsync: true,
       description: "Get taboola campaigns for account",
       arguments: [{ name: "accountId", type: "String" }],
     },
     get_taboola_campaign_items: {
-      async run(accountId, campaignId, query) {
-        return await getCampaignItems(accountId, campaignId, query, cfg);
+      async run(accountId, campaignId, query, cfgOverRide) {
+        return await getCampaignItems(accountId, campaignId, query, {
+          ...cfg,
+          ...cfgOverRide,
+        });
       },
       isAsync: true,
       description: "Get taboola ad items for campaign",
@@ -130,8 +139,11 @@ module.exports = {
       ],
     },
     get_taboola_campaign_item: {
-      async run(accountId, campaignId, itemId) {
-        return await getCampaignItem(accountId, campaignId, itemId, cfg);
+      async run(accountId, campaignId, itemId, cfgOverRide) {
+        return await getCampaignItem(accountId, campaignId, itemId, {
+          ...cfg,
+          ...cfgOverRide,
+        });
       },
       isAsync: true,
       description: "Get taboola ad items",
@@ -142,13 +154,11 @@ module.exports = {
       ],
     },
     get_taboola_campaign_content_report: {
-      async run(accountId, campaignId, query) {
-        return await getCampaignContentReport(
-          accountId,
-          campaignId,
-          query,
-          cfg
-        );
+      async run(accountId, campaignId, query, cfgOverRide) {
+        return await getCampaignContentReport(accountId, campaignId, query, {
+          ...cfg,
+          ...cfgOverRide,
+        });
       },
       isAsync: true,
       description: "Get taboola top campaign content report",
@@ -159,8 +169,11 @@ module.exports = {
       ],
     },
     create_taboola_campaign_item: {
-      async run(accountId, campaignId, url) {
-        return await createCampaignItem(accountId, campaignId, url, cfg);
+      async run(accountId, campaignId, url, cfgOverRide) {
+        return await createCampaignItem(accountId, campaignId, url, {
+          ...cfg,
+          ...cfgOverRide,
+        });
       },
       isAsync: true,
       description: "Create taboola ad item",
@@ -171,14 +184,11 @@ module.exports = {
       ],
     },
     update_taboola_campaign_item: {
-      async run(accountId, campaignId, itemId, body) {
-        return await updateCampaignItem(
-          accountId,
-          campaignId,
-          itemId,
-          body,
-          cfg
-        );
+      async run(accountId, campaignId, itemId, body, cfgOverRide) {
+        return await updateCampaignItem(accountId, campaignId, itemId, body, {
+          ...cfg,
+          ...cfgOverRide,
+        });
       },
       isAsync: true,
       description: "Update taboola ad item",
@@ -187,6 +197,17 @@ module.exports = {
         { name: "campaignId", type: "String" },
         { name: "itemId", type: "String" },
         { name: "body", type: "JSON" },
+      ],
+    },
+    get_taboola_token: {
+      async run(client_id, client_secret) {
+        return await get_taboola_token(client_id, client_secret);
+      },
+      isAsync: true,
+      description: "Get taboola token",
+      arguments: [
+        { name: "clientId", type: "String" },
+        { name: "clientSecret", type: "String" },
       ],
     },
   }),
