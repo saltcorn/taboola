@@ -230,6 +230,7 @@ module.exports = {
           ...(plugin.configuration || {}),
           access_token,
         };
+        console.log("updated taboola access token", access_token)
         plugin.configuration = newConfig;
         await plugin.upsert();
         getState().processSend({
